@@ -1,15 +1,15 @@
 package me.looorielovbb.retrofitdemo;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -37,7 +37,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
     Retrofit retrofit;
     Call<ResponseBody> call;
     Call<List<Contributor>> call1;
@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("微信支付测试");
-        setActionBar(toolbar);
+        setSupportActionBar(toolbar);
 
         iwxapi = WXAPIFactory.createWXAPI(this, WeChatPayApi.APP_ID);
     }
