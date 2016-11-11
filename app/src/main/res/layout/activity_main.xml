@@ -19,21 +19,29 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:text="Hello World!"/>
 
     <Button
-        style="@android:style/ButtonBar"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="retrofit"
         android:text="Retrofit"
-        tools:targetApi="24"/>
+        android:textColor="@android:color/white"/>
 
     <Button
-        style="@android:style/ButtonBar"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:onClick="retrofit1"
         android:text="Retrofit"
-        tools:targetApi="24"/>
+        android:textColor="@android:color/white"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:onClick="wxorder"
+        android:text="WxOrder"
+        android:textColor="@android:color/white"/>
 </LinearLayout>

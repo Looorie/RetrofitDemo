@@ -1,4 +1,4 @@
-package me.looorielovbb.retrofitdemo;
+package me.looorielovbb.retrofitdemo.model;
 
 /**
  * Created by Lulei on 2016/11/10.

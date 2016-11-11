@@ -1,8 +1,8 @@
-package me.looorielovbb.retrofitdemo.network;
+package me.looorielovbb.retrofitdemo.constants;
 
 import java.util.List;
 
-import me.looorielovbb.retrofitdemo.Contributor;
+import me.looorielovbb.retrofitdemo.model.Contributor;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
