@@ -12,7 +12,7 @@ import retrofit2.http.GET;
  */
 
 public interface WeChatPayApi {
-    public static String APP_ID = "wxd930ea5d5a258f4f";
+    public static String APP_ID = "wx8926eb07b90768c8";
     public String WeChatHost = "http://wxpay.weixin.qq.com/";
 
     @GET("pub_v2/app/app_pay.php?plat=android")

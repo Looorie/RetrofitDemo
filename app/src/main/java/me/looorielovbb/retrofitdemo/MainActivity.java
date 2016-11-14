@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         iwxapi = WXAPIFactory.createWXAPI(this, WeChatPayApi.APP_ID);
+        iwxapi.registerApp(WeChatPayApi.APP_ID);
     }
 
     @Override

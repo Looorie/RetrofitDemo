@@ -1,11 +1,11 @@
 package me.looorielovbb.retrofitdemo.wxapi;
 
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.tencent.mm.sdk.constants.ConstantsAPI;
 import com.tencent.mm.sdk.modelbase.BaseReq;
@@ -18,15 +18,15 @@ import me.looorielovbb.retrofitdemo.R;
 import me.looorielovbb.retrofitdemo.constants.WeChatPayApi;
 
 public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
-    private static final String TAG = "WXPayEntryActivity";
-    private Activity activity = this;
-    private IWXAPI api;
 
+    private static final String TAG = "MicroMsg.SDKSample.WXPayEntryActivity";
+
+    private IWXAPI api;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pay_result);
+        setContentView(R.layout.activity_wx_payentry);
 
         api = WXAPIFactory.createWXAPI(this, WeChatPayApi.APP_ID);
         api.handleIntent(getIntent(), this);
@@ -43,20 +43,17 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
     public void onReq(BaseReq req) {
     }
 
+    @SuppressLint("LongLogTag")
     @Override
     public void onResp(BaseResp resp) {
+        Log.e(TAG, "onPayFinish, errStr = " + resp.errStr);
         Log.e(TAG, "onPayFinish, errCode = " + resp.errCode);
 
         if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
-            switch (resp.errCode) {
-                case 0:
-                    Toast.makeText(activity, "支付成功", Toast.LENGTH_SHORT).show();
-                    break;
-                case -1:
-                    break;
-                case -2:
-                    break;
-            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("提示信息");
+            builder.setMessage("返回:" + resp.errCode);
+            builder.show();
         }
     }
 }
