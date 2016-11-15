@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import me.looorielovbb.retrofitdemo.constants.GitHubApi;
 import me.looorielovbb.retrofitdemo.constants.WeChatPayApi;
 import me.looorielovbb.retrofitdemo.model.Contributor;
+import me.looorielovbb.retrofitdemo.model.OrderResponse;
 import me.looorielovbb.retrofitdemo.model.WxOrder;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
@@ -40,6 +41,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
     Retrofit retrofit;
     Call<ResponseBody> call;
+    Call<OrderResponse> call2;
     Call<List<Contributor>> call1;
     Toolbar toolbar;
     ProgressDialog dialog;
@@ -57,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle("微信支付测试");
         setSupportActionBar(toolbar);
 
+        initWxPay();
+    }
+
+    private void initWxPay() {
         iwxapi = WXAPIFactory.createWXAPI(this, WeChatPayApi.APP_ID);
         iwxapi.registerApp(WeChatPayApi.APP_ID);
     }
@@ -224,6 +230,61 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void getOrder(View view) {
+        dialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait...", true);
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient okHttpClient = new OkHttpClient.Builder().addInterceptor(interceptor)
+                .retryOnConnectionFailure(true).connectTimeout(10, TimeUnit.SECONDS).build();
+
+
+        retrofit = new Retrofit.Builder().baseUrl(WeChatPayApi.Host)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create()).client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create()).build();
+        WeChatPayApi wxAPI = retrofit.create(WeChatPayApi.class);
+        call2 = wxAPI.getOrderInfo("90303", "DA23661", "1", "测试啊");
+        call2.enqueue(new Callback<OrderResponse>() {
+            @Override
+            public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
+
+                dialog.dismiss();
+                if (response.isSuccessful()) {
+                    OrderResponse orderResponse = response.body();
+                    if (orderResponse.getCode() == 0) {
+                        OrderResponse.DataBean dataBean = orderResponse.getData();
+
+                        PayReq request = new PayReq();
+                        request.appId = dataBean.getAppid();
+                        request.partnerId = dataBean.getPartnerid();
+                        request.prepayId = dataBean.getPrepayid();
+                        request.packageValue = dataBean.getPackage_();
+                        request.nonceStr = dataBean.getNoncestr();
+                        request.timeStamp = dataBean.getTimestamp();
+                        request.sign = dataBean.getSign();
+                        if (iwxapi.getWXAppSupportAPI() >= Build.PAY_SUPPORTED_SDK_INT) {
+                            Toast.makeText(MainActivity.this, "可支付", Toast.LENGTH_SHORT).show();
+                            iwxapi.sendReq(request);
+                        } else {
+                            Toast.makeText(MainActivity.this, "不支持支付", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(MainActivity.this, "返回信息：" + orderResponse.getMsg(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<OrderResponse> call, Throwable t) {
+                dialog.dismiss();
+                Log.e("onFailure", t.getMessage());
+                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
 }
