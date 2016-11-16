@@ -14,7 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        app:popupTheme="@style/Base.Theme.AppCompat.Light.DarkActionBar"/>
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -42,6 +43,60 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:onClick="getOrder"
-        android:text="WxOrder"
+        android:text="微信支付"
         android:textColor="@android:color/white"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:onClick="alisign"
+        android:text="支付宝支付"
+        android:textColor="@android:color/white"/>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hintTextAppearance="@style/hintTextAppearance">
+
+        <EditText
+            android:id="@+id/t1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="订单号"
+            android:inputType="text"
+            android:maxLines="1"
+            android:text="D12344"
+            android:textColor="#000000"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hintTextAppearance="@style/hintTextAppearance">
+
+        <EditText
+            android:id="@+id/t2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="总额"
+            android:inputType="number"
+            android:maxLines="1"
+            android:text="1"
+            android:textColor="#000000"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="返回结果："/>
+
+    <TextView
+        android:id="@+id/t3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/colorAccent"
+        tools:text="saklsdjsaklsdjalsssdsaklsdjalsssdsaklsdjalsssdsaklsdjalsssdsaklsdjalsssdalsssd"/>
 </LinearLayout>

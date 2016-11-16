@@ -7,7 +7,7 @@ package me.looorielovbb.retrofitdemo.model;
  * mail to lulei4461@gmail.com
  */
 
-public class OrderResponse {
+public class WxResponse {
 
 
     /**

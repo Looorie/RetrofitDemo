@@ -1,7 +1,7 @@
 package me.looorielovbb.retrofitdemo.constants;
 
-import me.looorielovbb.retrofitdemo.model.OrderResponse;
 import me.looorielovbb.retrofitdemo.model.WxOrder;
+import me.looorielovbb.retrofitdemo.model.WxResponse;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -20,18 +20,19 @@ public interface WeChatPayApi {
     public String Host = "http://digirun.vicp.io:30200/";
     public String WeChatHost = "http://wxpay.weixin.qq.com/";
 
+    //微信默认获取订单地址地址
     @GET("pub_v2/app/app_pay.php?plat=android")
     Call<WxOrder> getWxOrderInfo();
 
     //    payType:"90303"(固定值)
-//    orderNo:订单编号
-//    totalFee：金额
-//    subject：订单描述
+    //    orderNo:订单编号
+    //    totalFee：金额
+    //    subject：订单描述
     @FormUrlEncoded
     @POST("pay/payment")
-    Call<OrderResponse> getOrderInfo(@Field("payType") String payType,
-                                     @Field("orderNo") String orderNo,
-                                     @Field("totalFee") String totalFee,
-                                     @Field("subject") String subject);
+    Call<WxResponse> getOrderInfo(@Field("payType") String payType,
+                                  @Field("orderNo") String orderNo,
+                                  @Field("totalFee") String totalFee,
+                                  @Field("subject") String subject);
 
 }
