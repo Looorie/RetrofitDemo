@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.tencent.mm.sdk.constants.Build;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
@@ -27,13 +26,13 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import me.looorielovbb.retrofitdemo.constants.AliPayApi;
 import me.looorielovbb.retrofitdemo.constants.GitHubApi;
+import me.looorielovbb.retrofitdemo.constants.TestApi;
 import me.looorielovbb.retrofitdemo.constants.WeChatPayApi;
 import me.looorielovbb.retrofitdemo.model.AliResponse;
 import me.looorielovbb.retrofitdemo.model.AuthResult;
@@ -131,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     List<Contributor> contributorList = response.body();
                     Toast.makeText(MainActivity.this, contributorList.size() + "",
-                            Toast.LENGTH_SHORT).show();
+                                   Toast.LENGTH_SHORT).show();
                     Log.e("Tag", contributorList.toString());
                     for (Contributor contributor : contributorList) {
                         Log.e("login", contributor.getLogin());
@@ -157,34 +156,21 @@ public class MainActivity extends AppCompatActivity {
                 //                .addNetworkInterceptor(mTokenInterceptor)
                 .build();
 
-        retrofit = new Retrofit.Builder().baseUrl("https://api.github.com/")
+        retrofit = new Retrofit.Builder().baseUrl(TestApi.HOST)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create()).client(okHttpClient)
                 .build();
-        GitHubApi api = retrofit.create(GitHubApi.class);
-        call = api.contributorsBySimpleGetCall("square", "retrofit");
+        TestApi api = retrofit.create(TestApi.class);
+        call = api.tpic("1", "2", "3", "4", "5", "6", "7");
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 dialog.dismiss();
-                try {
-                    Toast.makeText(MainActivity.this, response.message(), Toast.LENGTH_SHORT)
-                            .show();
-                    if (response.isSuccessful()) {
-                        Gson gson = new Gson();
-                        ArrayList<Contributor> contributorsList = gson
-                                .fromJson(response.body().string(),
-                                        new TypeToken<List<Contributor>>() {}.getType());
-                        for (Contributor contributor : contributorsList) {
-                            Log.d("login", contributor.getLogin());
-                            Log.d("contributions", contributor.getContributions() + "");
-                            Toast.makeText(MainActivity.this,
-                                    contributor.getLogin() + contributor.getContributions(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+                Toast.makeText(MainActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                if (response.isSuccessful()) {
+
                 }
+
             }
 
             @Override
@@ -195,51 +181,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void wxorder(View view) {
-        dialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait...", true);
-
-        retrofit = new Retrofit.Builder().baseUrl(WeChatPayApi.WeChatHost)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create()).client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create()).build();
-        WeChatPayApi wxAPI = retrofit.create(WeChatPayApi.class);
-
-        wxOrderCall = wxAPI.getWxOrderInfo();
-        wxOrderCall.enqueue(new Callback<WxOrder>() {
-
-            @Override
-            public void onResponse(Call<WxOrder> call, Response<WxOrder> response) {
-                dialog.dismiss();
-
-                if (response.isSuccessful()) {
-
-                    WxOrder order = response.body();
-                    PayReq wxPayRequest = new PayReq();
-                    wxPayRequest.appId = order.getAppid();
-                    wxPayRequest.partnerId = order.getPartnerid();
-                    wxPayRequest.prepayId = order.getPrepayid();
-                    wxPayRequest.nonceStr = order.getNoncestr();
-                    wxPayRequest.timeStamp = order.getTimestamp() + "";
-                    wxPayRequest.packageValue = order.getPackageValue();
-                    wxPayRequest.sign = order.getSign();
-
-                    if (iwxapi.getWXAppSupportAPI() >= Build.PAY_SUPPORTED_SDK_INT) {
-                        Toast.makeText(MainActivity.this, "可支付", Toast.LENGTH_SHORT).show();
-                        iwxapi.sendReq(wxPayRequest);
-                    } else {
-                        Toast.makeText(MainActivity.this, "不支持支付", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<WxOrder> call, Throwable t) {
-                dialog.dismiss();
-                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    public void getOrder(View view) {
+    public void wxOrder(View view) {
+        t3.setText("");
         if (!check()) { return; }
         dialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait...", true);
 
@@ -248,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create()).build();
         WeChatPayApi wxAPI = retrofit.create(WeChatPayApi.class);
         call2 = wxAPI.getOrderInfo("90303", t1.getText().toString().trim(),
-                t2.getText().toString().trim(), "测试");
+                                   t2.getText().toString().trim(), "测试");
         call2.enqueue(new Callback<WxResponse>() {
             @Override
             public void onResponse(Call<WxResponse> call, Response<WxResponse> response) {
@@ -277,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     } else {
                         Toast.makeText(MainActivity.this, "返回信息：" + orderResponse.getMsg(),
-                                Toast.LENGTH_SHORT).show();
+                                       Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -305,7 +248,9 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public void alisign(View view) {
+    public void aliOrder(View view) {
+        t3.setText("");
+
         if (!check()) { return; }
         dialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait...", true);
 
@@ -315,8 +260,8 @@ public class MainActivity extends AppCompatActivity {
         AliPayApi aliAPI = retrofit.create(AliPayApi.class);
         call = aliAPI
                 .getSign("90103", t1.getText().toString().trim(), t2.getText().toString().trim(),
-                        "测试", "http://fx.dobado.cn/my_order.html",
-                        "http://fx.dobado.cn/my_order.html", "4028817957e2265d0157e4d2dbb40000");
+                         "测试", "http://fx.dobado.cn/my_order.html",
+                         "http://fx.dobado.cn/my_order.html", "4028817957e2265d0157e4d2dbb40000");
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -334,10 +279,11 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 PayTask alipay = new PayTask(MainActivity.this);
+                                String version = alipay.getVersion();
+                                Log.e("AliPayVersion : ", version);
                                 Map<String, String> result = alipay
                                         .payV2(aliResponse.getData().getAppSign(), true);
                                 Log.i("msp", result.toString());
-
                                 Message msg = new Message();
                                 msg.what = SDK_PAY_FLAG;
                                 msg.obj = result;
@@ -398,8 +344,8 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                     case SDK_AUTH_FLAG: {
-                        @SuppressWarnings("unchecked") AuthResult authResult = new AuthResult(
-                                (Map<String, String>) msg.obj, true);
+                        @SuppressWarnings("unchecked")
+                        AuthResult authResult = new AuthResult((Map<String, String>) msg.obj, true);
                         String resultStatus = authResult.getResultStatus();
 
                         // 判断resultStatus 为“9000”且result_code
@@ -409,13 +355,15 @@ public class MainActivity extends AppCompatActivity {
                             // 获取alipay_open_id，调支付时作为参数extern_token 的value
                             // 传入，则支付账户为该授权账户
                             Toast.makeText(outer, "授权成功\n" +
-                                            String.format("authCode:%s", authResult.getAuthCode()),
-                                    Toast.LENGTH_SHORT).show();
+                                                   String.format("authCode:%s", authResult
+                                                           .getAuthCode()),
+                                           Toast.LENGTH_SHORT).show();
                         } else {
                             // 其他状态值则为授权失败
-                            Toast.makeText(outer,
-                                    "授权失败" + String.format("authCode:%s", authResult.getAuthCode()),
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(outer, "授权失败" +
+                                                   String.format("authCode:%s", authResult
+                                                           .getAuthCode()),
+                                           Toast.LENGTH_SHORT).show();
 
                         }
                         break;
